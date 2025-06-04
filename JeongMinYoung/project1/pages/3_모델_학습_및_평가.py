@@ -12,15 +12,18 @@ plt.rc('axes', unicode_minus=False) # matplotlib이 기본적으로 사용하는
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 from utils.preprocessing import preprocess_commerce_data, split_and_scale
+from sklearn.metrics import roc_curve, auc
+
 
 # 모델 경로 및 threshold 설정
 model_options = {
-    "XGBoost": ("../models/xgboost_model(threshold=0.022).pkl", 0.022),
-    "GradientBoosting": ("../models/gb_model(threshold=0.134).pkl", 0.134),
-    "RandomForest": ("../models/random_forest_model(threshold=0.285).pkl", 0.285),
-    "HistGradientBoosting": ("../models/hgb_model(threshold=0.0004).pkl", 0.0004),
-    "Stacking": ("../models/stack_model(threshold=0.065).pkl", 0.065),
-    "Voting": ("../models/voting_model(threshold=0.137).pkl", 0.137)
+    "XGBoost": ("../models/xgboost_model(threshold=0.075).pkl", 0.075),
+    "GradientBoosting": ("../models/gb_model(threshold=0.1375).pkl", 0.1375),
+    "RandomForest": ("../models/random_forest_model(threshold=0.225).pkl", 0.225),
+    "HistGradientBoosting": ("../models/hgb_model(threshold=0.0001).pkl", 0.0001),
+    "Stacking": ("../models/stack_model(threshold=0.091).pkl", 0.091),
+    "Voting": ("../models/voting_model(threshold=0.1925).pkl", 0.137),
+    "LGBM": ("../models/lgbm(threshold=0.147).pkl", 0.147)
 }
 
 st.header("3. 모델 학습 및 평가")
@@ -32,7 +35,7 @@ view_mode = st.radio("🧪 평가 방식 선택", ["개별 모델 상세 보기"
 df_raw = pd.read_csv('data/CommerceData.csv')
 df_processed = preprocess_commerce_data(df_raw)
 
-exclude = ['NeverOrdered', 'CityTier', 'PreferredPaymentMode', 'Gender',
+exclude = ['CityTier', 'PreferredPaymentMode', 'Gender',
            'PreferedOrderCat', 'MaritalStatus', 'PreferredLoginDevice']
 
 X_train, X_test, y_train, y_test, scaler = split_and_scale(
@@ -46,8 +49,12 @@ if view_mode == "개별 모델 상세 보기":
 
     predict_mode = st.radio("예측 방식 선택", ["Threshold 적용", "기본 예측"], horizontal=True)
 
-    if predict_mode == "Threshold 적용" and hasattr(model, "predict_proba"):
+    if hasattr(model, "predict_proba"):
         y_proba = model.predict_proba(X_test)[:, 1]
+    else:
+        y_proba = None  # 혹시나 대비
+
+    if predict_mode == "Threshold 적용" and y_proba is not None:
         y_pred = (y_proba >= threshold).astype(int)
         st.info(f"📌 Threshold `{threshold}` 기준으로 분류되었습니다.")
     else:
@@ -78,6 +85,18 @@ if view_mode == "개별 모델 상세 보기":
     ax.bar(metrics.keys(), metrics.values(), color=["skyblue", "salmon", "lightgreen", "violet"])
     ax.set_ylim(0, 1)
     ax.set_title(f"{selected_model} 성능 지표 - {predict_mode}")
+    st.pyplot(fig)
+
+    fpr, tpr, _ = roc_curve(y_test, y_proba)
+    roc_auc = auc(fpr, tpr)
+
+    fig, ax = plt.subplots()
+    ax.plot(fpr, tpr, label=f"AUC = {roc_auc:.3f}")
+    ax.plot([0, 1], [0, 1], linestyle="--", color="gray")
+    ax.set_title(f"{selected_model} ROC Curve")
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.legend()
     st.pyplot(fig)
 
     st.subheader("📋 Classification Report")
