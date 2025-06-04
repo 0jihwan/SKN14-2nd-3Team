@@ -368,6 +368,6 @@ st.dataframe(pd.DataFrame(expected, index=contingency.index, columns=contingency
 
 st.title("ERD 다이어그램")
 from PIL import Image
-image = Image.open('data/image.png')
+image = Image.open('data/ERDdiagram.png')
 st.image(image)
 
