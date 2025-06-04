@@ -14,6 +14,14 @@
 |                        김성민                         |                        정민영                         |                        서은선                         |                         공지환                         | 정유진 |
 |  [@jiyun-kang12](https://github.com/jiyun-kang12)  |       [@Gogimin](https://github.com/Gogimin)       |        [@JI0617](https://github.com/JI0617)        |    [@jaehoi-koo](https://github.com/jaehoi-koo)     |
 
+### **🧑‍💻 담당업무**
+| 이름   | 역할                               |
+|------|----------------------------------|
+| 정민영  | 모델 학습, 최종모델 선정 및 Streamlit 구현    |
+| 공지환  | 모델 학습,                           |
+| 김성민  | 팀장, 데이터 전처리 및 데이터 분석 및 README 작성 |
+| 정유진  | 데이터 전처리 및 Streamlit 구현           |
+| 서은선  | 모델 학습, README 작성                 |
 
 # 1. 프로젝트 개요
 
@@ -67,12 +75,12 @@
 고객의 **이용 기간, 주문 횟수, 앱 사용 시간, 성별, 결제 수단, 디바이스 유형** 등 다양한 피처를 통해  
 이탈 가능성을 예측하고, 행동 패턴에 따라 고객을 분류합니다.
 
-![image.png](SuhEunSeon/img/dataset.PNG)
+<img src="SuhEunSeon/img/dataset.PNG" width="300"/>
 
 
 
 **ERD**
-![image.png](SuhEunSeon/img/erd.PNG)
+<img src="SuhEunSeon/img/erd.PNG" width="300"/>
 
 
 **✅ 최종 선정된 데이터셋 구성**
@@ -209,7 +217,7 @@ df = df.drop(columns=['Churn'])
 
 👉 전체 고객 중 이탈률은 **상대적으로 낮지만 무시할 수 없는 수준**으로,  
 핵심 고객 이탈 방지 전략이 필요
-![image.png](SuhEunSeon/img/graph1.PNG)
+<img src="SuhEunSeon/img/graph1.PNG" width="300"/>
 
 ---
 
@@ -219,8 +227,7 @@ df = df.drop(columns=['Churn'])
 - 특히 점수 **1~2점대는 이탈률 50% 이상**
 
 👉 **서비스 만족도 개선**이 이탈 방지의 핵심 요인임
-![image.png](SuhEunSeon/img/graph2.PNG)
----
+<img src="SuhEunSeon/img/graph2.PNG" width="300"/>---
 
 #### 3️⃣ 도시 등급(CityTier)별 이탈률
 
@@ -229,8 +236,7 @@ df = df.drop(columns=['Churn'])
 
 👉 **지역 기반 차별화 전략**이 필요하며,  
 중소 도시 고객 대상 마케팅 강화가 효과적일 수 있음
-
----
+<img src="SuhEunSeon/img/img_6.png" width="300"/>---
 
 #### 4️⃣ 앱 사용시간 vs 주문 수 (산점도)
 
@@ -239,8 +245,7 @@ df = df.drop(columns=['Churn'])
 
 👉 앱 사용량이 고객 충성도 지표로 활용 가능하며,  
 **앱 활용을 유도하는 UX 전략이 필요**
-
----
+<img src="SuhEunSeon/img/img_7.png" width="300"/>---
 
 #### 5️⃣ 불만 제기 여부별 이탈률
 
@@ -249,33 +254,71 @@ df = df.drop(columns=['Churn'])
 
 👉 **CS 응답 품질 및 피드백 처리 속도 개선** 필요  
 불만 제기 고객은 빠른 케어가 필수
-
----
+<img src="SuhEunSeon/img/img_9.png" width="300"/>---
 
 #### 6️⃣ 이탈 여부별 주문 금액 증가율 (Box Plot)
 
 - 이탈 고객은 전년 대비 주문 증가율이 낮고, 분포도 넓음  
 - 유지 고객은 안정적인 구매 성장을 보임
-
+<img src="SuhEunSeon/img/img_10.png" width="300"/>
 👉 **이탈 고객의 구매 상승 곡선을 조기에 멈추게 하지 않는 전략**이 중요
 
 ---
+### 가설 1: 만족도가 낮을 수록 고객은 이탈할 가능성이 높다.
+<img src="SuhEunSeon/img/img_1.png" width="300"/>고객의 이탈 여부(`Churn`)에 따라 만족도 점수(`SatisfactionScore`)의 차이가 있는지를 확인하기 위해 시각화 및 독립표본 t-검정을 수행함.
 
-### 🔍 추가 분석 항목 (미출력 or 선택 출력)
+- 아래 boxplot은 이탈 고객과 잔존 고객 간의 만족도 분포 차이를 보여줌
+- 이탈 고객 그룹의 중앙값 및 전체 점수가 **상대적으로 낮은 분포**를 보임
 
-> 🔸 선호 결제 수단별 고객 비율  
-> 🔸 선호 주문 카테고리 분포  
-> 🔸 등록된 기기 수에 따른 이탈률 변화
+📈 통계 검정 결과 (독립표본 t-검정)
 
-👉 이들 항목은 고객의 구매 성향과 이탈 간접 요인 분석에 활용될 수 있으며,  
-**Segment 마케팅 설계 및 개인화 추천의 기초 데이터**로 사용 가능함
+| 비교 그룹 | 평균 만족도 |
+|-----------|--------------|
+| 잔존 고객 (`Churn=0`) | 약 `x̄₀` |
+| 이탈 고객 (`Churn=1`) | 약 `x̄₁` |
 
+```python
+t-statistic = -15.123, p-value = 0.0000
+```
+- 유의수준 0.05에서 p-value가 매우 작기 때문에, 두 그룹 간 만족도 점수는 통계적으로 유의미하게 다름 
+
+
+
+***즉, 만족도가 낮은 고객일수록 이탈할 가능성이 높음을 의미함***
+
+### 가설 2: 불만을 제기한 고객은 이탈할 가능성이 높다.
+<img src="SuhEunSeon/img/img.png" width="300"/>
+고객의 불만 제기 여부(`Complain`)와 이탈 여부(`Churn`) 간의 연관성을 분석하기 위해 교차표 시각화 및 카이제곱 독립성 검정을 수행함.
+
+- 아래 countplot은 불만 여부에 따라 고객 이탈 비율이 어떻게 달라지는지를 보여줌
+- 불만을 제기한 고객 중 이탈한 비율이 **상대적으로 높게 나타남**
+
+```python
+Chi2 = 59.382, p-value = 0.00000000000000000000
+```
+- 유의수준 0.05에서 p-value가 0에 수렴하므로, 두 변수는 독립적이지 않음
+
+
+
+***즉, 불만을 제기한 고객은 이탈 가능성이 통계적으로 유의미하게 높음***
 ---
 
-📌 **요약**  
-이러한 시각화 분석을 통해 고객의 행동 패턴과 이탈 특성을 정량적으로 이해하고,  
-**데이터 기반의 정밀한 타겟 마케팅 및 이탈 방지 전략 수립이 가능**해짐
+### 가설 3: DaySinceLastOrder가 클수록 이탈할 가능성이 높다.
+<img src="SuhEunSeon/img/img_2.png" width="300"/>고객의 최근 주문까지의 일수(`DaySinceLastOrder`)가 이탈 여부(`Churn`)에 영향을 미치는지를 확인하기 위해  
+boxplot 시각화 및 독립표본 t-검정을 수행함.
+- 아래 boxplot은 이탈 고객과 잔존 고객 간의 최근 주문 간격의 분포를 보여줌
+- 이탈 고객(`Churn=1`)의 경우, 평균적으로 **최근 주문 간격이 더 길게 나타나는 경향**이 있음
 
+📈 통계 검정 결과 (독립표본 t-검정)
+
+```python
+t-statistic = 19.562, p-value = 0.0000000000000000000000000000000000000000
+```
+- **p-value가 0에 수렴할 정도로 매우 작기 때문에**, 두 그룹의 평균은 유의미하게 다름
+
+
+***즉, 오랜 기간 주문하지 않은 고객일수록 이탈 가능성이 높음을 시사함***
+---
 
 # 4. 인공지능 학습 결과서
 ### 📊 1. 사용한 예측 모델
@@ -430,31 +473,29 @@ RFA 분석과 클러스터링을 통해 고객을 4개의 유형으로 분류하
 # 6. Streamlit 화면 구현
 ### ✅대시보드 홈 페이지 (메인)
 
-![image.png](SuhEunSeon/img/st1.png)
-![image.png](SuhEunSeon/img/st2.png)
+<img src="SuhEunSeon/img/st1.png" width="300"/>
+
 
 ### ✅학습자 이탈 예측 페이지 (메인)
 
-![image.png](img/2.png)
 
 ### ✅학습자 이탈 예측 페이지 (예측 후)
 
-![image.png](img/3.png)
 
-![image.png](img/4.png)
 
 ### ✅모델 성능 평가 페이지 (메인)
 
-![image.png](img/5.png)
-![image.png](img/6.png)
+<img src="img/5.png" width="300"/>
+<img src="img/6.png" width="300"/>
 
 ### ✅모델 성능 평가 페이지 (각 모델 성능 시각화 적용시)
 
-![image.png](img/7.png)
-![image.png](img/8.png)
+<img src="SuhEunSeon/img/model.PNG" width="300"/>
+<img src="SuhEunSeon/img/model2.PNG" width="300"/>
 
 # 6. 한 줄 회고
-> 📌 **정민영**: 
-> 📌 **정유진**: 
-> 📌 **서은선**: 
-> 📌 **김성민**: 
+> 📌 **정민영**:
+> 📌 **공지환**:
+> 📌 **김성민**:
+> 📌 **정유진**:
+> 📌 **서은선**:
