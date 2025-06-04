@@ -23,20 +23,16 @@ def preprocess_commerce_data(df):
     df['NeverOrdered'] = (df['DaySinceLastOrder'] > max_day).astype(int)
 
     # 2. 범주형 인코딩
+
     cat_cols = ['PreferredLoginDevice', 'PreferredPaymentMode', 'Gender',
                 'PreferedOrderCat', 'MaritalStatus']
 
-    le_dict = {}
-    for col in cat_cols:
-        le = LabelEncoder()
-        df[col] = le.fit_transform(df[col])
-        le_dict[col] = le  # 나중에 inverse_transform 등을 위해 저장
-
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
     # 3. ID 제거
     if 'CustomerID' in df.columns:
         df.drop(columns=['CustomerID'], inplace=True)
 
-    return df, le_dict
+    return df
 
 
 
