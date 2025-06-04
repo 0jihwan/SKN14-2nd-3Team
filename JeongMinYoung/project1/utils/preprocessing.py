@@ -18,25 +18,20 @@ def preprocess_commerce_data(df):
     df['OrderCount'] = df['OrderCount'].fillna(0)
 
     # 주문 안 한 고객 처리
-    max_day = df['DaySinceLastOrder'].max()
-    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(max_day + 1)
-    df['NeverOrdered'] = (df['DaySinceLastOrder'] > max_day).astype(int)
+    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(df['DaySinceLastOrder'].mean())
 
     # 2. 범주형 인코딩
+
     cat_cols = ['PreferredLoginDevice', 'PreferredPaymentMode', 'Gender',
                 'PreferedOrderCat', 'MaritalStatus']
 
-    le_dict = {}
-    for col in cat_cols:
-        le = LabelEncoder()
-        df[col] = le.fit_transform(df[col])
-        le_dict[col] = le  # 나중에 inverse_transform 등을 위해 저장
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
 
     # 3. ID 제거
     if 'CustomerID' in df.columns:
         df.drop(columns=['CustomerID'], inplace=True)
 
-    return df, le_dict
+    return df
 
 
 
