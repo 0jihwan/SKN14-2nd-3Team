@@ -90,6 +90,69 @@ for col in selected_cat:
     plt.xticks(rotation=30)
     st.pyplot(fig)
 
+
+#st.set_page_config(layout="wide")
+st.title("📊 이탈 분석: 데이터 전처리")
+st.subheader("🔧 데이터 전처리")
+df = pd.read_csv('data/E Commerce Dataset22.csv')
+
+# Mobile Phone -> Mobile
+df['PreferredLoginDevice'] = df['PreferredLoginDevice'].replace({'Mobile Phone': 'Mobile'})
+
+# 수치형 평균값 대체
+num_cols = df.select_dtypes(include=['float64', 'int64']).columns.drop('CustomerID')
+df[num_cols] = df[num_cols].fillna(df[num_cols].mean())
+
+# 범주형 최빈값 대체
+cat_cols = df.select_dtypes(include='object').columns
+for col in cat_cols:
+    df[col] = df[col].fillna(df[col].mode()[0])
+
+# 불필요 컬럼 제거 및 데이터 타입 변경
+df = df.drop(columns=['CustomerID'])
+df['Churn'] = df['Churn'].astype('category')
+
+st.success("✅ 전처리 완료")
+st.dataframe(df.head())
+
+st.subheader("📈 변수별 시각화")
+
+# SatisfactionScore
+st.markdown("**💡 Satisfaction Score vs Churn**")
+fig1, ax1 = plt.subplots()
+sns.boxplot(x='Churn', y='SatisfactionScore', data=df, ax=ax1)
+ax1.set_title("만족도 점수별 이탈률")
+st.pyplot(fig1)
+
+# HourSpendOnApp
+st.markdown("**💡 App Usage Time vs Churn**")
+fig2, ax2 = plt.subplots()
+sns.boxplot(x='Churn', y='HourSpendOnApp', data=df, ax=ax2)
+ax2.set_title("앱 사용시간과 이탈률")
+st.pyplot(fig2)
+
+# Complain
+st.markdown("**💡 Complain 비율 vs Churn**")
+fig3, ax3 = plt.subplots()
+sns.countplot(x='Complain', hue='Churn', data=df, ax=ax3)
+ax3.set_title("불만여부별 이탈률")
+st.pyplot(fig3)
+
+# OrderCount
+st.markdown("**💡 Order Count vs Churn**")
+fig4, ax4 = plt.subplots()
+sns.boxplot(x='Churn', y='OrderCount', data=df, ax=ax4)
+ax4.set_title("주문 수와 이탈률")
+st.pyplot(fig4)
+
+# CouponUsed
+st.markdown("**💡 Coupon Usage vs Churn**")
+fig5, ax5 = plt.subplots()
+sns.boxplot(x='Churn', y='CouponUsed', data=df, ax=ax5)
+ax5.set_title("쿠폰 사용별 이탈률")
+st.pyplot(fig5)
+
+
 df = pd.read_csv('data/E_Commerce_Dataset_model2.csv')
 
 
@@ -305,6 +368,6 @@ st.dataframe(pd.DataFrame(expected, index=contingency.index, columns=contingency
 
 st.title("ERD 다이어그램")
 from PIL import Image
-image = Image.open('data/image.png')
+image = Image.open('data/ERDdiagram.png')
 st.image(image)
 
