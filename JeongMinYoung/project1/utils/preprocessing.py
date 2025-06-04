@@ -18,9 +18,7 @@ def preprocess_commerce_data(df):
     df['OrderCount'] = df['OrderCount'].fillna(0)
 
     # 주문 안 한 고객 처리
-    max_day = df['DaySinceLastOrder'].max()
-    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(max_day + 1)
-    df['NeverOrdered'] = (df['DaySinceLastOrder'] > max_day).astype(int)
+    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(df['DaySinceLastOrder'].mean())
 
     # 2. 범주형 인코딩
 
@@ -28,6 +26,7 @@ def preprocess_commerce_data(df):
                 'PreferedOrderCat', 'MaritalStatus']
 
     df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
+
     # 3. ID 제거
     if 'CustomerID' in df.columns:
         df.drop(columns=['CustomerID'], inplace=True)
