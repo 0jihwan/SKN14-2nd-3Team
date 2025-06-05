@@ -11,6 +11,7 @@ import os
 import google.generativeai as genai
 
 # 📌 Gemini API 키 불러오기
+load_dotenv()
 genai_api_key = os.environ.get('API_KEY')
 # genai_api_key = "AIzaSyClJ8szfqSGJekr5bw9AxtsUhCFAjx9ruk"
 if genai_api_key:

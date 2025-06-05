@@ -8,8 +8,9 @@ from scipy.stats import ttest_ind
 from scipy.stats import chi2_contingency
 import matplotlib
 
-font_path = "C:\\Windows\\Fonts\\H2GTRM.TTF" # 윈도우OS 폰트경로
+font_path = "C:/Windows/Fonts/malgun.ttf" # 윈도우OS 폰트경로
 font_prop = fm.FontProperties(fname=font_path)
+rc('font', family=font_prop.get_name())
 font_name = font_prop.get_name() # 폰트명
 matplotlib.rc('font', family=font_name)
 plt.rc('axes', unicode_minus=False) # matplotlib이 기본적으로 사용하는 유니코드 마이너스 비활성화, 아스키코드 마이너스 사용)
