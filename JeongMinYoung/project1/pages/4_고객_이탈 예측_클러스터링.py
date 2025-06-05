@@ -21,7 +21,7 @@ rfm_scaler = joblib.load('../models/kmeans_scaler.pkl')
 kmeans = joblib.load('../models/kmeans.pkl')
 
 # 2. Streamlit 인터페이스
-st.header("4. 신규 고객 데이터 업로드 및 군집 예측")
+st.header("4. 고객 이탈 예측 및 맞춤형 마케팅 전략 도출")
 
 uploaded = st.file_uploader("고객 데이터를 CSV 파일로 업로드하세요", type='csv')
 if uploaded:
@@ -41,6 +41,8 @@ if uploaded:
 
     rfm_df['cluster'] = clusters
     rfm_df['churn proba'] = df_result['Churn_Prob']
+    rfm_df['churn pred'] = df_result['Churn_Pred']
+    rfm_df = rfm_df[['CustomerID', 'recency', 'frequency', 'monetary', 'cluster', 'churn proba', 'churn pred']]
 
     # 결과 출력
     st.subheader("📈 예측 결과 및 클러스터")
@@ -84,7 +86,7 @@ if uploaded:
     - 충성 고객 → 유지 및 프리미엄 혜택 중심 전략
     - 중간 고객 → 활성화, 관계 강화 전략
 
-    전략은 마케터가 바로 사용할 수 있도록 간결하고 직관적으로 작성해주세요.
+    전략은 마케터가 바로 사용할 수 있도록 간결하고 직관적으로 작성해주세요. 그리고 존댓말로 제안해주세요.
     """
 
                     try:
@@ -98,13 +100,40 @@ if uploaded:
                     st.success(strategy)
 
     # 📥 클러스터별 CSV 다운로드
-    st.markdown("### 📥 클러스터별 고객 다운로드")
+    st.markdown("### 📥 클러스터별 고객 리스트 다운로드")
     for c in sorted(rfm_df['cluster'].unique()):
         cluster_data = rfm_df[rfm_df['cluster'] == c]
         csv = cluster_data.to_csv(index=False).encode('utf-8-sig')
         st.download_button(
-            label=f"📁 클러스터 {c} 고객 다운로드",
+            label=f"📁 클러스터 {c} 고객 리스트 다운로드",
             data=csv,
             file_name=f'cluster_{c}_customers.csv',
             mime='text/csv'
         )
+
+    # 🔍 이탈 가능성이 높은 고객 (예측 결과 기준) 클러스터별 출력
+    st.subheader("🚨 이탈 위험 고객 클러스터별 상세 보기")
+    st.markdown("##### 아래는 **모델이 이탈할 것이라고 예측한 고객 리스트**입니다. \n(모델 이탈 예측 정확도: 테스트셋 기준 **99.37%**)")
+
+    high_risk_df = rfm_df[rfm_df['churn pred'] == 1]
+
+    if not high_risk_df.empty:
+        st.warning(f"현재 총 **{len(high_risk_df)}명**의 고객이 이탈할 가능성이 높은 것으로 예측되었습니다.\n "
+                   f"\n 각 클러스터별로 고객 특성에 맞는 **즉각적인 마케팅 전략** 도입이 필요합니다.\n "
+                   f"\n 위에서 제공된 클러스터별 자동 전략 제안(Gemini 기반) 을 활용하여, 빠르게 대응 전략을 수립해보세요.")
+
+        for cluster_id in sorted(high_risk_df['cluster'].unique()):
+            cluster_subset = high_risk_df[high_risk_df['cluster'] == cluster_id]
+            st.markdown(f"### 🔹 클러스터 {cluster_id} – 이탈 위험 고객 **{len(cluster_subset)}명**")
+            st.dataframe(cluster_subset[['CustomerID', 'recency', 'frequency', 'monetary', 'churn proba']])
+
+            # CSV 다운로드
+            csv = cluster_subset.to_csv(index=False).encode('utf-8-sig')
+            st.download_button(
+                label=f"📁 클러스터 {cluster_id} 이탈 위험 고객 리스트 다운로드",
+                data=csv,
+                file_name=f'high_risk_cluster_{cluster_id}.csv',
+                mime='text/csv'
+            )
+    else:
+        st.success("현재 이탈 위험 고객은 예측되지 않았습니다. 😊")
