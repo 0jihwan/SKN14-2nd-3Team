@@ -21,7 +21,7 @@ st.set_page_config(layout="wide")
 plt.rc('font', family='Malgun Gothic')  # 한글 폰트
 
 # 제목
-st.title("📈 고객 이탈 분석 대시보드")
+st.header("📈 2. 고객 이탈 분석 대시보드")
 
 # 데이터 로드
 df = pd.read_csv('data/CommerceData.csv')

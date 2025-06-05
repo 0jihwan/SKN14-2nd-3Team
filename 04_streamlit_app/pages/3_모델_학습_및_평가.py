@@ -77,7 +77,7 @@ if view_mode == "개별 모델 상세 보기":
 
     st.markdown(f"""
     - 사용 모델: **{selected_model}**
-    - 평가 기준: Accuracy, Recall, Precision, F1 Score
+    - 평가 기준(Test셋 데이터): Accuracy, Recall, Precision, F1 Score
     
     📌 **성능 결과**
     - Accuracy: `{acc:.4f}`  

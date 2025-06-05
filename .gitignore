@@ -7,3 +7,8 @@
 # 구글 드라이브 숨긴파일 
 /**/.tmp.drivedownload/
 /**/.tmp.driveupload/
+
+.env
+
+__pycache__/
+*.pyc
