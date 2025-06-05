@@ -123,11 +123,14 @@ def predict_churn(df_new):
 
     # 모델 불러오기 및 예측
     model = joblib.load("../models/gb_model(threshold=0.1375).pkl")
+    threshold = 0.1375
     y_proba = model.predict_proba(df_pred)[:, 1]
+    y_pred = (y_proba > threshold).astype(int)
 
     # 예측 결과 원본 데이터에 붙이기
     df_result = df_new.copy()
     df_result['Churn_Prob'] = y_proba
+    df_result['Churn_Pred'] = y_pred
 
     return df_pred_input, df_pred, df_result
 
