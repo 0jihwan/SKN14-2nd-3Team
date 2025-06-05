@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+import joblib
 
 def preprocess_commerce_data(df):
     df = df.copy()
@@ -18,7 +19,7 @@ def preprocess_commerce_data(df):
     df['OrderCount'] = df['OrderCount'].fillna(0)
 
     # 주문 안 한 고객 처리
-    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(df['DaySinceLastOrder'].mean())
+    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(df['DaySinceLastOrder'].median())
 
     # 2. 범주형 인코딩
 
@@ -71,3 +72,145 @@ def split_and_scale(df, target_col='Churn', exclude_cols=None, test_size=0.2, ra
     X_test.loc[:, num_cols] = scaler.transform(X_test[num_cols])
 
     return X_train, X_test, y_train, y_test, scaler
+
+
+def preprocess_for_prediction(df):
+
+    df = df.copy()
+
+    # 1. 결축치 처리
+    df['Tenure'] = df['Tenure'].fillna(df['Tenure'].median())
+    df['WarehouseToHome'] = df['WarehouseToHome'].fillna(df['WarehouseToHome'].median())
+    df['HourSpendOnApp'] = df['HourSpendOnApp'].fillna(df['HourSpendOnApp'].median())
+
+    df['NoLastYearPurchase'] = df['OrderAmountHikeFromlastYear'].isna().astype(int)
+    df['OrderAmountHikeFromlastYear'] = df['OrderAmountHikeFromlastYear'].fillna(0)
+
+    df['CouponUsed'] = df['CouponUsed'].fillna(0)
+    df['OrderCount'] = df['OrderCount'].fillna(0)
+
+    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(df['DaySinceLastOrder'].median())
+
+    # 2. 범주형 인코딩
+    cat_cols = ['PreferredLoginDevice', 'PreferredPaymentMode', 'Gender',
+                'PreferedOrderCat', 'MaritalStatus']
+
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
+
+    df.drop(columns=['CustomerID'], inplace=True)
+
+    return df
+
+
+
+def predict_churn(df_new):
+    # 전처리
+    df_pred_input = preprocess_for_prediction(df_new)
+
+    # 스케일링용 변수 및 스케일러 로드
+    scaler = joblib.load("../models/train_scaler.pkl")
+
+    exclude = ['CityTier', 'PreferredPaymentMode', 'Gender',
+               'PreferedOrderCat', 'MaritalStatus', 'PreferredLoginDevice']
+
+    # 정수형, 실수형 컬럼 중에서 exclude 컬럼 제외한 컬럼 뽑기
+    num_cols = df_pred_input.select_dtypes(include=['float64', 'int64']).columns.difference(exclude)
+
+    df_pred = df_pred_input.copy()
+
+    df_pred[num_cols] = scaler.transform(df_pred[num_cols])
+
+
+    # 모델 불러오기 및 예측
+    model = joblib.load("../models/gb_model(threshold=0.1375).pkl")
+    y_proba = model.predict_proba(df_pred)[:, 1]
+
+    # 예측 결과 원본 데이터에 붙이기
+    df_result = df_new.copy()
+    df_result['Churn_Prob'] = y_proba
+
+    return df_pred_input, df_pred, df_result
+
+def preprocess_for_kmeans(df):
+
+    df = df.copy()
+
+    # 1. 결측치 처리
+    df['Tenure'] = df['Tenure'].fillna(df['Tenure'].median())
+    df['WarehouseToHome'] = df['WarehouseToHome'].fillna(df['WarehouseToHome'].median())
+    df['HourSpendOnApp'] = df['HourSpendOnApp'].fillna(df['HourSpendOnApp'].median())
+
+    df['NoLastYearPurchase'] = df['OrderAmountHikeFromlastYear'].isna().astype(int)
+    df['OrderAmountHikeFromlastYear'] = df['OrderAmountHikeFromlastYear'].fillna(0)
+
+    df['CouponUsed'] = df['CouponUsed'].fillna(0)
+    df['OrderCount'] = df['OrderCount'].fillna(0)
+
+    # 주문 안 한 고객 처리
+    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(df['DaySinceLastOrder'].median())
+
+    cat_cols = ['PreferredLoginDevice', 'PreferredPaymentMode', 'Gender',
+                'PreferedOrderCat', 'MaritalStatus']
+
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
+
+    df.drop(columns=['CustomerID', 'Churn'], inplace=True)
+
+    return df
+
+def preprocess_all_data(df):
+    df = df.copy()
+
+    # 1. 결측치 처리
+    df['Tenure'] = df['Tenure'].fillna(df['Tenure'].median())
+    df['WarehouseToHome'] = df['WarehouseToHome'].fillna(df['WarehouseToHome'].median())
+    df['HourSpendOnApp'] = df['HourSpendOnApp'].fillna(df['HourSpendOnApp'].median())
+
+    df['NoLastYearPurchase'] = df['OrderAmountHikeFromlastYear'].isna().astype(int)
+    df['OrderAmountHikeFromlastYear'] = df['OrderAmountHikeFromlastYear'].fillna(0)
+
+    df['CouponUsed'] = df['CouponUsed'].fillna(0)
+    df['OrderCount'] = df['OrderCount'].fillna(0)
+
+    # 주문 안 한 고객 처리
+    df['DaySinceLastOrder'] = df['DaySinceLastOrder'].fillna(df['DaySinceLastOrder'].median())
+
+    # 2. 범주형 인코딩
+
+    cat_cols = ['PreferredLoginDevice', 'PreferredPaymentMode', 'Gender',
+                'PreferedOrderCat', 'MaritalStatus']
+
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
+
+    # 3. ID 제거
+    df.drop(columns=['CustomerID', 'Churn'], inplace=True)
+
+    return df
+
+def predict_churn1(df_new):
+    # 전처리
+    df_pred_input = preprocess_for_kmeans(df_new)
+
+    # 스케일링용 변수 및 스케일러 로드
+    scaler = joblib.load("../models/train_scaler.pkl")
+
+    exclude = ['CityTier', 'PreferredPaymentMode', 'Gender',
+               'PreferedOrderCat', 'MaritalStatus', 'PreferredLoginDevice']
+
+    # 정수형, 실수형 컬럼 중에서 exclude 컬럼 제외한 컬럼 뽑기
+    num_cols = df_pred_input.select_dtypes(include=['float64', 'int64']).columns.difference(exclude)
+
+    df_pred = df_pred_input.copy()
+
+    df_pred[num_cols] = scaler.transform(df_pred[num_cols])
+
+
+    # 모델 불러오기 및 예측
+    model = joblib.load("../models/gb_model(threshold=0.1375).pkl")
+    y_proba = model.predict_proba(df_pred)[:, 1]
+
+    # 예측 결과 원본 데이터에 붙이기
+    df_result = df_new.copy()
+    df_result['Churn_Prob'] = y_proba
+
+    return df_pred_input, df_pred, df_result
