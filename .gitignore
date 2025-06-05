@@ -3,6 +3,7 @@
 # - /**/ 0개이상 n개의 하위 디렉토리를 모두 포함하는 표현식 /.idea, /a/b/c/d/.idea
 /**/.idea/
 /**/*.iml
+/**/*.env
 
 # 구글 드라이브 숨긴파일 
 /**/.tmp.drivedownload/

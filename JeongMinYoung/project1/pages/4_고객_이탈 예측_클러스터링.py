@@ -5,13 +5,14 @@ import matplotlib.pyplot as plt
 import joblib
 from utils.preprocessing import predict_churn
 from utils.preprocessing import preprocess_for_prediction
-
+from dotenv import load_dotenv
 # Gemini API용
 import os
 import google.generativeai as genai
 
 # 📌 Gemini API 키 불러오기
-genai_api_key = "AIzaSyClJ8szfqSGJekr5bw9AxtsUhCFAjx9ruk"
+genai_api_key = os.environ.get('API_KEY')
+# genai_api_key = "AIzaSyClJ8szfqSGJekr5bw9AxtsUhCFAjx9ruk"
 if genai_api_key:
     genai.configure(api_key=genai_api_key)
     gemini_model = genai.GenerativeModel("gemini-1.5-flash")
