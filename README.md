@@ -9,10 +9,10 @@
 
 ## 🙋🏻 팀명: 
 
-| <img src="img/rock.png" width="100" height="120"/> | <img src="img/sr1.png" width="100" height="120" /> | <img src="img/sr2.png" width="100"  height="120"/> | <img src="img/paper.png" width="100" height="120"/> |
-|:--------------------------------------------------:|:--------------------------------------------------:|:--------------------------------------------------:|:---------------------------------------------------:|:-----:|
+| <img src="img/rock.png" width="100" height="120"/> | <img src="img/sr1.png" width="100" height="120" /> | <img src="img/sr2.png" width="100"  height="120"/> | <img src="img/paper.png" width="100" height="120"/> | <img src="img/rock.png" width="100" height="120"/> |
+|--------------------------------------------------|--------------------------------------------------|--------------------------------------------------|---------------------------------------------------|--------------------------------------------------|
 |                        김성민                         |                        정민영                         |                        서은선                         |                         공지환                         | 정유진 |
-|  [@jiyun-kang12](https://github.com/jiyun-kang12)  |       [@Gogimin](https://github.com/Gogimin)       |        [@JI0617](https://github.com/JI0617)        |    [@jaehoi-koo](https://github.com/jaehoi-koo)     |
+|  [@jiyun-kang12](https://github.com/jiyun-kang12)  |       [@Gogimin](https://github.com/Gogimin)       |        [@JI0617](https://github.com/JI0617)        |    [@jaehoi-koo](https://github.com/jaehoi-koo)     |       [@Gogimin](https://github.com/Gogimin)       |
 
 ### **🧑‍💻 담당업무**
 | 이름   | 역할                               |
