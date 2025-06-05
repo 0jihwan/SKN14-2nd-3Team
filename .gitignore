@@ -5,6 +5,13 @@
 /**/*.iml
 /**/*.env
 
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+
 # 구글 드라이브 숨긴파일 
 /**/.tmp.drivedownload/
 /**/.tmp.driveupload/
