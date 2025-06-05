@@ -7,9 +7,9 @@
 
 ---
 
-## 🙋🏻 팀명: 원조이커머스 이탈 컨설팅
+## 🙋🏻 팀명: 원조1호 이커머스 이탈 컨설턴트
 
-| <img src="SuhEunSeon/img/도라에몽.PNG" width="100" height="120"/> | <img src="SuhEunSeon/img/퉁퉁이.PNG" width="100" height="120" /> | <img src="SuhEunSeon/img/노진구.JPG" width="100"  height="120"/> | <img src="SuhEunSeon/img/이슬이.JPG" width="100" height="120"/> | <img src="SuhEunSeon/img/비실이.JPG" width="100" height="120"/> |
+| <img src="/SuhEunSeon/img/도라에몽.png" width="100" height="120"/> | <img src="/SuhEunSeon/img/퉁퉁이.png" width="100" height="120" /> | <img src="/SuhEunSeon/img/노진구.jpg" width="100"  height="120"/> | <img src="SuhEunSeon/img/이슬이.jpg" width="100" height="120"/> | <img src="/SuhEunSeon/img/비실이.jpg" width="100" height="120"/> |
 |---------------------------------------------------------------|---------------------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------|--------------------------------------------------------------|
 | 정민영                                                           | 공지환                                                           | 김성민                                                           | 정유진                                                          | 서은선                                                          |
 
