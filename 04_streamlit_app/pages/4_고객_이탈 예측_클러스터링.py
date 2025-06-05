@@ -27,6 +27,18 @@ kmeans = joblib.load('../03_trained_model/kmeans.pkl')
 # 2. Streamlit 인터페이스
 st.header("4. 고객 이탈 예측 및 맞춤형 마케팅 전략 도출")
 
+st.markdown("""
+✅ **CSV 파일을 업로드하시면 아래 작업이 자동으로 진행됩니다:**
+
+1. 📊 고객 데이터 전처리  
+2. 🔍 이탈 확률 예측  
+3. 🧩 고객 세그먼트 세분화 (RFM 기반 클러스터링)  
+4. 🧠 Gemini AI 기반 마케팅 전략 자동 생성  
+5. ⚠️ **이탈 위험 높은 고객 리스트 따로 추출 → 클러스터별 빠른 대응 전략 수립 가능**
+
+**👉 고객별 맞춤 전략까지 한 번에 확인해보세요!**
+""")
+
 uploaded = st.file_uploader("고객 데이터를 CSV 파일로 업로드하세요", type='csv')
 if uploaded:
     df_new = pd.read_csv(uploaded)
@@ -91,6 +103,7 @@ if uploaded:
     - 중간 고객 → 활성화, 관계 강화 전략
 
     전략은 마케터가 바로 사용할 수 있도록 간결하고 직관적으로 작성해주세요. 그리고 존댓말로 제안해주세요.
+    그리고 클러스터별로 전략이 구분될 수 있게끔 각각 다른 전략을 제안해주세요.
     """
 
                     try:
@@ -124,8 +137,7 @@ if uploaded:
     if not high_risk_df.empty:
         st.warning(f"현재 총 **{len(high_risk_df)}명**의 고객이 이탈할 가능성이 높은 것으로 예측되었습니다.\n "
                    f"\n 각 클러스터별로 고객 특성에 맞는 **즉각적인 마케팅 전략** 도입이 필요합니다.\n "
-                   f"\n 위에서 제공된 클러스터별 자동 전략 제안(Gemini 기반) 을 활용하여, 빠르게 대응 전략을 수립해보세요."
-                   f"\n 각 클러스터별 전략은 구분되게끔 너무 비슷하지 않게 제안해주세요.")
+                   f"\n 위에서 제공된 클러스터별 자동 전략 제안(Gemini 기반) 을 활용하여, 빠르게 대응 전략을 수립해보세요.")
 
         for cluster_id in sorted(high_risk_df['cluster'].unique()):
             cluster_subset = high_risk_df[high_risk_df['cluster'] == cluster_id]
